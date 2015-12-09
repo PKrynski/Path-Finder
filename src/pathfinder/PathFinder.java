@@ -1,5 +1,8 @@
 package pathfinder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -19,21 +22,44 @@ public class PathFinder {
 
         Edge[] oneNeighbours = new Edge[2];
         oneNeighbours[0] = new Edge(two, 2);
-        oneNeighbours[1] = new Edge(three, 5);
-        
+        oneNeighbours[1] = new Edge(three, 8);
+
         one.neighbours = oneNeighbours;
 
         Edge[] twoNeighbours = new Edge[1];
         twoNeighbours[0] = new Edge(three, 4);
-        
-        two.neighbours = twoNeighbours;
-        
-        System.out.println("Available paths from A:");
-        calculatePathsFrom(one);
-        
-        System.out.println("\nAvailable paths from B:");
-        calculatePathsFrom(two);
 
+        two.neighbours = twoNeighbours;
+
+        Edge[] threeNeighbours = new Edge[1];
+        threeNeighbours[0] = new Edge(one, 1);
+
+        three.neighbours = threeNeighbours;
+
+        Vertex[] all = {one, two, three};
+
+        System.out.println("Dostępne drogi:");
+        calculatePathsFrom(one);
+        System.out.println("");
+
+        //System.out.println("\nAvailable paths from B:");
+        //calculatePathsFrom(two);
+        
+        for (Vertex v : all) {
+            System.out.println("Najlżejsza droga do " + v + " - " + v.minDist);
+            List<Vertex> path = getShortestPathTo(v);
+            System.out.println("Droga: " + path);
+        }
+
+        System.out.println("\nNajlżejsza droga z A do C:");
+        
+         for( Vertex v : getShortestPathTo(three) ) {
+         System.out.print(" -> ");
+         System.out.print(v);
+         }
+         System.out.println("");
+         
+        //System.out.println( getShortestPathTo(three) );
     }
 
     public static void calculatePathsFrom(Vertex source) {
@@ -51,12 +77,12 @@ public class PathFinder {
 
                 Vertex currentEnd = e.end;
                 double weight = e.weight;
-                
-                System.out.println("From: " + source.toString() + " to: " + currentEnd.toString() + " - " + weight);
+
+                System.out.println("Z: " + currentStart.toString() + " do: " + currentEnd.toString() + " - " + weight);
 
                 double currentPathCost = currentStart.minDist + weight;
-
-                if (currentPathCost < currentStart.minDist) {
+                
+                if (currentPathCost < currentEnd.minDist) {
 
                     visited.remove(currentEnd);
                     currentEnd.minDist = currentPathCost;
@@ -67,6 +93,21 @@ public class PathFinder {
 
         }
 
+    }
+
+    public static List<Vertex> getShortestPathTo(Vertex destination) {
+
+        List<Vertex> path = new ArrayList<>();
+
+        Vertex current;
+
+        for (current = destination; current != null; current = current.previous) {
+            path.add(current);
+        }
+
+        Collections.reverse(path);
+
+        return path;
     }
 
 }
