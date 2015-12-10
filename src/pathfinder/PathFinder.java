@@ -11,54 +11,66 @@ import java.util.PriorityQueue;
  */
 public class PathFinder {
 
-    /**
-     * @param args the command line arguments
-     */
+    private ArrayList<Vertex> allNodes = new ArrayList<>();
+
+    public void displayPaths() {
+
+        for (Vertex v : allNodes) {
+            System.out.println("Najlżejsza droga do " + v + " - " + v.minDist);
+            List<Vertex> path = getShortestPathTo(v);
+            System.out.println("Droga: " + path);
+        }
+    }
+
+    public void addVertex(Vertex newVertex) {
+
+        this.allNodes.add(newVertex);
+    }
+
     public static void main(String[] args) {
+
+        PathFinder pathFinder = new PathFinder();
 
         Vertex one = new Vertex("A");
         Vertex two = new Vertex("B");
         Vertex three = new Vertex("C");
 
-        Edge[] oneNeighbours = new Edge[2];
-        oneNeighbours[0] = new Edge(two, 2);
-        oneNeighbours[1] = new Edge(three, 8);
+        ArrayList<Edge> oneNeighbours = new ArrayList<>();
+        oneNeighbours.add(new Edge(two, 2));
+        oneNeighbours.add(new Edge(three, 8));
 
         one.neighbours = oneNeighbours;
 
-        Edge[] twoNeighbours = new Edge[1];
-        twoNeighbours[0] = new Edge(three, 4);
+        ArrayList<Edge> twoNeighbours = new ArrayList<>();
+        twoNeighbours.add(new Edge(three, 4));
 
         two.neighbours = twoNeighbours;
 
-        Edge[] threeNeighbours = new Edge[1];
-        threeNeighbours[0] = new Edge(one, 1);
+        ArrayList<Edge> threeNeighbours = new ArrayList<>();
+        threeNeighbours.add(new Edge(one, 1));
 
         three.neighbours = threeNeighbours;
 
-        Vertex[] all = {one, two, three};
+        pathFinder.addVertex(one);
+        pathFinder.addVertex(two);
+        pathFinder.addVertex(three);
 
         System.out.println("Dostępne drogi:");
         calculatePathsFrom(one);
         System.out.println("");
 
+        pathFinder.displayPaths();
+
         //System.out.println("\nAvailable paths from B:");
         //calculatePathsFrom(two);
-        
-        for (Vertex v : all) {
-            System.out.println("Najlżejsza droga do " + v + " - " + v.minDist);
-            List<Vertex> path = getShortestPathTo(v);
-            System.out.println("Droga: " + path);
-        }
-
         System.out.println("\nNajlżejsza droga z A do C:");
-        
-         for( Vertex v : getShortestPathTo(three) ) {
-         System.out.print(" -> ");
-         System.out.print(v);
-         }
-         System.out.println("");
-         
+
+        for (Vertex v : getShortestPathTo(three)) {
+            System.out.print(" -> ");
+            System.out.print(v);
+        }
+        System.out.println("");
+
         //System.out.println( getShortestPathTo(three) );
     }
 
@@ -81,7 +93,7 @@ public class PathFinder {
                 System.out.println("Z: " + currentStart.toString() + " do: " + currentEnd.toString() + " - " + weight);
 
                 double currentPathCost = currentStart.minDist + weight;
-                
+
                 if (currentPathCost < currentEnd.minDist) {
 
                     visited.remove(currentEnd);
@@ -115,7 +127,7 @@ public class PathFinder {
 class Vertex implements Comparable<Vertex> {
 
     public String name;
-    public Edge[] neighbours;
+    public ArrayList<Edge> neighbours;
     public double minDist = Double.POSITIVE_INFINITY;
     public Vertex previous;
 
