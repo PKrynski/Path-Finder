@@ -1,9 +1,12 @@
 package pathfinder;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 
 /**
  *
@@ -12,6 +15,26 @@ import java.util.PriorityQueue;
 public class PathFinder {
 
     private ArrayList<Vertex> allNodes = new ArrayList<>();
+
+    public void addVertex(Vertex newVertex) {
+
+        this.allNodes.add(newVertex);
+    }
+
+    public Vertex getVertex(String vertexName) {
+
+        for (Vertex v : allNodes) {
+            if (v.name.equals(vertexName)) {
+                return v;
+            }
+        }
+
+        Vertex theOne = new Vertex(vertexName);
+
+        this.addVertex(theOne);
+
+        return theOne;
+    }
 
     public void displayPaths() {
 
@@ -22,41 +45,73 @@ public class PathFinder {
         }
     }
 
-    public void addVertex(Vertex newVertex) {
+    public void readFileData(String filename) throws FileNotFoundException {
 
-        this.allNodes.add(newVertex);
+        File myFile = new File(filename);
+        Scanner fileInput = new Scanner(myFile);
+
+        while (fileInput.hasNext()) {
+
+            String vertexName = fileInput.next();
+            Vertex inputVertex = getVertex(vertexName);
+
+            int numberOfEdges = fileInput.nextInt();
+            fileInput.next();
+
+            for (int i = 0; i < numberOfEdges; i++) {
+
+                String targetName = fileInput.next();
+                double edgeWeight = Double.parseDouble(fileInput.next());
+
+                Vertex targetVertex = this.getVertex(targetName);
+
+                inputVertex.neighbours.add(new Edge(targetVertex, edgeWeight));
+            }
+
+        }
+
+        /*
+         Vertex one = new Vertex("A");
+         Vertex two = new Vertex("B");
+         Vertex three = new Vertex("C");
+
+         ArrayList<Edge> oneNeighbours = new ArrayList<>();
+         oneNeighbours.add(new Edge(two, 2));
+         oneNeighbours.add(new Edge(three, 8));
+
+         one.neighbours = oneNeighbours;
+
+         ArrayList<Edge> twoNeighbours = new ArrayList<>();
+         twoNeighbours.add(new Edge(three, 4));
+
+         two.neighbours = twoNeighbours;
+
+         ArrayList<Edge> threeNeighbours = new ArrayList<>();
+         threeNeighbours.add(new Edge(one, 1));
+
+         three.neighbours = threeNeighbours;
+
+         this.addVertex(one);
+         this.addVertex(two);
+         this.addVertex(three);
+         */
     }
 
     public static void main(String[] args) {
 
         PathFinder pathFinder = new PathFinder();
 
-        Vertex one = new Vertex("A");
-        Vertex two = new Vertex("B");
-        Vertex three = new Vertex("C");
+        String filename = args[0];
 
-        ArrayList<Edge> oneNeighbours = new ArrayList<>();
-        oneNeighbours.add(new Edge(two, 2));
-        oneNeighbours.add(new Edge(three, 8));
-
-        one.neighbours = oneNeighbours;
-
-        ArrayList<Edge> twoNeighbours = new ArrayList<>();
-        twoNeighbours.add(new Edge(three, 4));
-
-        two.neighbours = twoNeighbours;
-
-        ArrayList<Edge> threeNeighbours = new ArrayList<>();
-        threeNeighbours.add(new Edge(one, 1));
-
-        three.neighbours = threeNeighbours;
-
-        pathFinder.addVertex(one);
-        pathFinder.addVertex(two);
-        pathFinder.addVertex(three);
+        try {
+            pathFinder.readFileData(filename);
+        } catch (FileNotFoundException ex) {
+            System.out.println("Podany plik nie istnieje: " + filename);
+            return;
+        }
 
         System.out.println("Dostępne drogi:");
-        calculatePathsFrom(one);
+        calculatePathsFrom(pathFinder.allNodes.get(0));
         System.out.println("");
 
         pathFinder.displayPaths();
@@ -65,7 +120,7 @@ public class PathFinder {
         //calculatePathsFrom(two);
         System.out.println("\nNajlżejsza droga z A do C:");
 
-        for (Vertex v : getShortestPathTo(three)) {
+        for (Vertex v : getShortestPathTo(pathFinder.allNodes.get(2))) {
             System.out.print(" -> ");
             System.out.print(v);
         }
@@ -127,7 +182,7 @@ public class PathFinder {
 class Vertex implements Comparable<Vertex> {
 
     public String name;
-    public ArrayList<Edge> neighbours;
+    public ArrayList<Edge> neighbours = new ArrayList<>();
     public double minDist = Double.POSITIVE_INFINITY;
     public Vertex previous;
 
