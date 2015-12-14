@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -39,13 +40,13 @@ public class PathFinder {
     public void displayPaths() {
 
         for (Vertex v : allNodes) {
-            System.out.println("Najlżejsza droga do " + v + " - " + v.minDist);
+            System.out.println("Najlżejsza droga do " + v + " - waga: " + v.minDist);
             List<Vertex> path = getShortestPathTo(v);
             System.out.println("Droga: " + path);
         }
     }
 
-    public void readFileData(String filename) throws FileNotFoundException {
+    public void readFileData(String filename) throws FileNotFoundException, NoSuchElementException {
 
         File myFile = new File(filename);
         Scanner fileInput = new Scanner(myFile);
@@ -70,63 +71,6 @@ public class PathFinder {
 
         }
 
-        /*
-         Vertex one = new Vertex("A");
-         Vertex two = new Vertex("B");
-         Vertex three = new Vertex("C");
-
-         ArrayList<Edge> oneNeighbours = new ArrayList<>();
-         oneNeighbours.add(new Edge(two, 2));
-         oneNeighbours.add(new Edge(three, 8));
-
-         one.neighbours = oneNeighbours;
-
-         ArrayList<Edge> twoNeighbours = new ArrayList<>();
-         twoNeighbours.add(new Edge(three, 4));
-
-         two.neighbours = twoNeighbours;
-
-         ArrayList<Edge> threeNeighbours = new ArrayList<>();
-         threeNeighbours.add(new Edge(one, 1));
-
-         three.neighbours = threeNeighbours;
-
-         this.addVertex(one);
-         this.addVertex(two);
-         this.addVertex(three);
-         */
-    }
-
-    public static void main(String[] args) {
-
-        PathFinder pathFinder = new PathFinder();
-
-        String filename = args[0];
-
-        try {
-            pathFinder.readFileData(filename);
-        } catch (FileNotFoundException ex) {
-            System.out.println("Podany plik nie istnieje: " + filename);
-            return;
-        }
-
-        System.out.println("Dostępne drogi:");
-        calculatePathsFrom(pathFinder.allNodes.get(0));
-        System.out.println("");
-
-        pathFinder.displayPaths();
-
-        //System.out.println("\nAvailable paths from B:");
-        //calculatePathsFrom(two);
-        System.out.println("\nNajlżejsza droga z A do C:");
-
-        for (Vertex v : getShortestPathTo(pathFinder.allNodes.get(2))) {
-            System.out.print(" -> ");
-            System.out.print(v);
-        }
-        System.out.println("");
-
-        //System.out.println( getShortestPathTo(three) );
     }
 
     public static void calculatePathsFrom(Vertex source) {
@@ -175,6 +119,55 @@ public class PathFinder {
         Collections.reverse(path);
 
         return path;
+    }
+
+    public static void main(String[] args) {
+
+        if (args.length > 0) {
+
+            PathFinder pathFinder = new PathFinder();
+
+            String filename = args[0];
+
+            try {
+                pathFinder.readFileData(filename);
+            } catch (FileNotFoundException ex) {
+                System.err.println("Podany plik nie istnieje: " + filename);
+                return;
+            } catch (NoSuchElementException ex) {
+                System.err.println("Dane w podanym pliku mają nieprawidłowy format: " + filename);
+                return;
+            }
+
+            if (args.length > 1) {
+
+                String source = args[1];
+                System.out.println("Wszystkie dostępne drogi (bezpośrednie):");
+                calculatePathsFrom(pathFinder.getVertex(source));
+                System.out.println("");
+
+                if (args.length == 2) {
+
+                    System.out.println("Drogi z " + source + ":");
+                    pathFinder.displayPaths();
+                }
+
+                if (args.length == 3) {
+
+                    String destination = args[2];
+                    System.out.println("\nNajlżejsza droga z " + source + " do " + destination + ":");
+
+                    for (Vertex v : getShortestPathTo(pathFinder.getVertex("B"))) {
+                        System.out.print(" -> ");
+                        System.out.print(v);
+                    }
+                    System.out.println("");
+                }
+
+            }
+
+        }
+
     }
 
 }
