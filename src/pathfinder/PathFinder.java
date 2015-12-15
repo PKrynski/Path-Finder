@@ -157,15 +157,28 @@ public class PathFinder {
                     String destination = args[2];
                     System.out.println("\nNajlżejsza droga z " + source + " do " + destination + ":");
 
-                    for (Vertex v : getShortestPathTo(pathFinder.getVertex("B"))) {
+                    for (Vertex v : getShortestPathTo(pathFinder.getVertex(destination))) {
                         System.out.print(" -> ");
                         System.out.print(v);
                     }
                     System.out.println("");
                 }
 
+            } else {
+                System.out.println("Wczytano dane wejściowe, jednak nie podałeś punktu początkowego ani końcowego.");
+                System.out.println("Punkt początkowy podaj jako drugi argument");
+                System.out.println("Punkt końcowy podaj jako trzeci argument.");
+                System.out.println("Jeśli nie podasz punktu końcowego wypisane zostaną najkorzystniejsze"
+                                   + " ścieżki do wszystkich pozostałych wierzchołków. ");
             }
 
+        } else {
+            System.out.println("Podano za mało argumentów.");
+            System.out.println("Jako pierwszy argument podaj nazwę pliku zawierającego dane wejściowe.");
+            System.out.println("Drugi argument: punkt początkowy.");
+            System.out.println("Trzeci argument: punkt końcowy.");
+            System.out.println("Jeśli nie podasz punktu końcowego wypisane zostaną najkorzystniejsze"
+                               + " ścieżki do wszystkich pozostałych wierzchołków. ");
         }
 
     }
