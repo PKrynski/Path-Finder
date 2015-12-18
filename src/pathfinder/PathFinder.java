@@ -40,9 +40,15 @@ public class PathFinder {
     public void displayPaths() {
 
         for (Vertex v : allNodes) {
-            System.out.println("Najlżejsza droga do " + v + " - waga: " + v.minDist);
-            List<Vertex> path = getShortestPathTo(v);
-            System.out.println("Droga: " + path);
+
+            if (v.minDist == Double.POSITIVE_INFINITY) {
+                System.out.println("Brak drogi do " + v);
+            } else {
+                System.out.println("Najlżejsza droga do " + v + " - waga: " + v.minDist);
+                List<Vertex> path = getShortestPathTo(v);
+                System.out.println("Droga: " + path);
+            }
+
         }
     }
 
