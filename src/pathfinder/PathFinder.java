@@ -89,8 +89,6 @@ public class PathFinder {
                 Vertex currentEnd = e.end;
                 double weight = e.weight;
 
-                System.out.println("Z: " + currentStart.toString() + " do: " + currentEnd.toString() + " - " + weight);
-
                 double currentPathCost = currentStart.minDist + weight;
 
                 if (currentPathCost < currentEnd.minDist) {
@@ -121,6 +119,18 @@ public class PathFinder {
         return path;
     }
 
+    public void showInput() {
+
+        System.out.println("Wszystkie dostępne bezpośrednie drogi:");
+
+        for (Vertex v : allNodes) {
+
+            for (Edge e : v.neighbours) {
+                System.out.println("Z: " + v.toString() + " do: " + e.end.toString() + " - " + e.weight);
+            }
+        }
+    }
+
     public static void main(String[] args) {
 
         if (args.length > 0) {
@@ -131,6 +141,8 @@ public class PathFinder {
 
             try {
                 pathFinder.readFileData(filename);
+                System.out.println("Plik wejściowy: " + filename);
+                pathFinder.showInput();
             } catch (FileNotFoundException ex) {
                 System.err.println("Podany plik nie istnieje: " + filename);
                 return;
@@ -142,7 +154,7 @@ public class PathFinder {
             if (args.length > 1) {
 
                 String source = args[1];
-                System.out.println("Wszystkie dostępne drogi (bezpośrednie):");
+
                 calculatePathsFrom(pathFinder.getVertex(source));
                 System.out.println("");
 
@@ -155,13 +167,23 @@ public class PathFinder {
                 if (args.length == 3) {
 
                     String destination = args[2];
-                    System.out.println("\nNajlżejsza droga z " + source + " do " + destination + ":");
+                    System.out.println("Najlżejsza droga z " + source + " do " + destination + ":");
 
-                    for (Vertex v : getShortestPathTo(pathFinder.getVertex(destination))) {
-                        System.out.print(" -> ");
-                        System.out.print(v);
+                    Vertex end = pathFinder.getVertex(destination);
+
+                    if (end.minDist == Double.POSITIVE_INFINITY) {
+                        System.out.println("Tych punktów nie łączy żadna droga!");
+                    } else {
+
+                        for (Vertex v : getShortestPathTo(end)) {
+                            System.out.print(" -> ");
+                            System.out.print(v);
+                        }
+                        System.out.println("");
+
+                        System.out.println("waga drogi: " + end.minDist);
                     }
-                    System.out.println("");
+
                 }
 
             } else {
