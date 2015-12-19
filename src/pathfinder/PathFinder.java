@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -52,7 +51,7 @@ public class PathFinder {
         }
     }
 
-    public void readFileData(String filename) throws FileNotFoundException, NoSuchElementException {
+    public void readFileData(String filename) throws FileNotFoundException {
 
         File myFile = new File(filename);
         Scanner fileInput = new Scanner(myFile);
@@ -110,7 +109,7 @@ public class PathFinder {
 
     }
 
-    public static List<Vertex> getShortestPathTo(Vertex destination) {
+    public List<Vertex> getShortestPathTo(Vertex destination) {
 
         List<Vertex> path = new ArrayList<>();
 
@@ -152,7 +151,7 @@ public class PathFinder {
             } catch (FileNotFoundException ex) {
                 System.err.println("Podany plik nie istnieje: " + filename);
                 return;
-            } catch (NoSuchElementException ex) {
+            } catch (Exception ex) {
                 System.err.println("Dane w podanym pliku mają nieprawidłowy format: " + filename);
                 return;
             }
@@ -181,7 +180,7 @@ public class PathFinder {
                         System.out.println("Tych punktów nie łączy żadna droga!");
                     } else {
 
-                        for (Vertex v : getShortestPathTo(end)) {
+                        for (Vertex v : pathFinder.getShortestPathTo(end)) {
                             System.out.print(" -> ");
                             System.out.print(v);
                         }
@@ -193,7 +192,7 @@ public class PathFinder {
                 }
 
             } else {
-                System.out.println("Wczytano dane wejściowe, jednak nie podałeś punktu początkowego ani końcowego.");
+                System.out.println("\nWczytano dane wejściowe, jednak nie podałeś punktu początkowego ani końcowego.");
                 System.out.println("Punkt początkowy podaj jako drugi argument");
                 System.out.println("Punkt końcowy podaj jako trzeci argument.");
                 System.out.println("Jeśli nie podasz punktu końcowego wypisane zostaną najkorzystniejsze"
