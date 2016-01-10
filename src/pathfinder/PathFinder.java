@@ -78,7 +78,7 @@ public class PathFinder {
 
     }
 
-    public static void calculatePathsFrom(Vertex source) {
+    public void calculatePathsFrom(Vertex source) {
 
         source.minDist = 0;
         PriorityQueue<Vertex> visited = new PriorityQueue<>();
@@ -160,7 +160,7 @@ public class PathFinder {
 
                 String source = args[1];
 
-                calculatePathsFrom(pathFinder.getVertex(source));
+                pathFinder.calculatePathsFrom(pathFinder.getVertex(source));
                 System.out.println("");
 
                 if (args.length == 2) {
